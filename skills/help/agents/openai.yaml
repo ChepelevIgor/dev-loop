@@ -1,0 +1,4 @@
+interface:
+  display_name: "Помощь по Dev Loop"
+  short_description: "Объясняет команды, настройку и порядок работы плагина"
+  default_prompt: "Используй $help, чтобы объяснить, как работает Dev Loop и какой навык мне выбрать."

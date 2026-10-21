@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mobile vs design</title>
+<style>
+:root{--bg:#f6f5f2;--card:#fff;--ink:#1b1b1a;--mute:#6d6b66;--line:#e4e1da;--bad:#c62f2f;--ok:#1f8a4c;--part:#c7791a;--acc:#2f5bd6}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#17171a;--card:#202024;--ink:#ecebe7;--mute:#9a988f;--line:#33333a}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,sans-serif}
+main{max-width:1200px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:21px;margin:0 0 4px}h2{font-size:16px;margin:26px 0 8px}.m{color:var(--mute);font-size:13px}a{color:var(--acc)}
+.v{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:999px;color:#fff;vertical-align:middle}
+.v-match{background:var(--ok)}.v-differs{background:var(--bad)}.v-not-found,.v-none{background:var(--mute)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin:10px 0}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.tabs button{padding:7px 12px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;cursor:pointer;font:inherit}
+.tabs button.on{border-color:var(--acc);color:var(--acc);font-weight:600}
+.side{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.side figure{margin:0}.side img,.stack img{width:100%;border:1px solid var(--line);border-radius:6px;display:block}
+figcaption{font-size:12px;color:var(--mute);margin-top:4px}
+.stack{position:relative;max-width:460px}.stack img.top{position:absolute;inset:0}
+.wrapbox{position:relative}.box{position:absolute;border:2px solid var(--bad);border-radius:2px;pointer-events:none}
+table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px}th{color:var(--mute);font-weight:600;font-size:12px;text-transform:uppercase}
+.s-matches{color:var(--ok);font-weight:700}.s-differs,.s-missing{color:var(--bad);font-weight:700}.s-unclear{color:var(--mute);font-weight:600}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin:8px 0 2px;max-width:420px}.bar i{display:block;height:100%;background:var(--ok)}
+.sev-high{color:var(--bad);font-weight:700}.sev-medium{color:var(--part);font-weight:600}.sev-low{color:var(--mute)}
+code{font:12px ui-monospace,Menlo,monospace}
+@media(max-width:800px){.side{grid-template-columns:1fr}table{display:block;overflow:auto}}
+</style></head><body><main id="main"></main>
+<script>
+const D = /*__DATA__*/null;
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LABEL = {match:'Совпадает', differs:'Есть отличия', 'not-found':'Экран не найден'};
+const KIND = {text:'текст', color:'цвет', spacing:'отступы', size:'размер', font:'шрифт', icon:'иконка', missing:'нет в мобилке', extra:'лишнее в мобилке', order:'порядок', state:'состояние/данные', other:'другое'};
+const ST = {matches:'сходится', differs:'расходится', missing:'нет в мобилке', unclear:'неясно'};
+const SRCN = {design:'дизайн', task:'задача', spec:'спецификация', docs:'документация'};
+const STR = {strong:'уверенно', possible:'вероятно', weak:'слабо'};
+const f = D.findings, c = D.candidate, v = f ? f.verdict : 'none';
+document.title = `${D.title} — ${LABEL[v] || 'не оценено'}`;
+let h = `<h1>${esc(D.title)} <span class="v v-${esc(v)}">${esc(LABEL[v] || 'не оценено')}</span></h1>`;
+h += `<div class="m">${D.full ? 'Весь экран' : 'Часть экрана'} · ${esc(D.viewport.width)}×${esc(D.viewport.height)} pt @${esc(D.scale)}x · ${esc(D.at)}</div>`;
+if (f) h += `<div class="card">${esc(f.summary)}</div>`;
+if (c) {
+  const from = c.from || {};
+  h += `<div class="card"><b>Экран в дизайне:</b> <code>${esc(c.route)}?${esc(c.query)}</code>`
+    + (f && f.state ? ` · данные: ${esc(f.state)}` : '')
+    + (c.match ? `<div class="m">Найдено ${esc(STR[c.match.strength] || '')} (сходство ${esc(c.match.score)}), область ${esc(c.match.x)},${esc(c.match.y)} ${esc(c.match.w)}×${esc(c.match.h)} px</div>` : '')
+    + `<div class="m">${esc(from.repo)} · ${esc(from.ref)} @ ${esc((from.sha || '').slice(0, 10))}</div></div>`;
+}
+if (D.pics) {
+  h += `<h2>Сравнение</h2><div class="tabs" id="tabs">${['Рядом', 'Наложение', 'Отличия'].map((x, i) => `<button data-i="${i}"${i ? '' : ' class="on"'}>${x}</button>`).join('')}</div><div id="view"></div>`;
+  h += `<div class="m">Изменено ${esc(c.diff.changed)}% пикселей. Рендер устройства и браузера немного отличается (шрифты, сглаживание) — карта показывает, куда смотреть; вывод — в списке ниже.</div>`;
+} else if (D.mobile) {
+  h += `<h2>Скриншот</h2><div class="stack"><img src="${D.mobile}" alt="Скриншот мобилки"></div>`;
+}
+if (f && (f.differences || []).length) {
+  h += `<h2>Отличия</h2><div class="card"><table><tr><th>Важность</th><th>Что</th><th>Где</th><th>Мобилка</th><th>Дизайн</th></tr>`
+    + f.differences.map(d => `<tr><td class="sev-${esc(d.severity)}">${esc(d.severity)}</td><td>${esc(KIND[d.kind] || d.kind)}</td><td>${esc(d.where)}</td><td>${esc(d.mobile)}</td><td>${esc(d.design)}</td></tr>`).join('') + `</table></div>`;
+}
+if (f && (f.logic || []).length) {
+  const sc = D.logic || {};
+  h += `<h2>Бизнес-логика: дизайн и мобилка</h2><div class="card"><b>${sc.percent == null ? 'Проверить не удалось' : `Сходится ${esc(sc.matches)} из ${esc(sc.checked)} (${esc(sc.percent)}%)`}</b>${sc.unclear ? ` <span class="m">· неясно: ${esc(sc.unclear)}</span>` : ''}`
+    + (sc.percent == null ? '' : `<div class="bar"><i style="width:${Number(sc.percent)}%"></i></div>`)
+    + `<table><tr><th>Правило</th><th>Где в дизайне</th><th>В мобилке</th><th>Доказательство</th></tr>` + f.logic.map(x =>
+      `<tr><td>${esc(x.rule)}${x.note ? `<div class="m">${esc(x.note)}</div>` : ''}</td><td>${esc(SRCN[x.source] || x.source)}<div class="m"><code>${esc(x.ref)}</code></div></td>`
+      + `<td class="s-${esc(x.status)}">${esc(ST[x.status] || x.status)}</td><td>${x.seen ? 'видно на скриншоте' : ''}${x.mobile ? `<div><code>${esc(x.mobile)}</code></div>` : ''}</td></tr>`).join('') + `</table></div>`;
+}
+if (f && (f.questions || []).length) h += `<h2>Открытые вопросы</h2><div class="card"><ul>${f.questions.map(q => `<li>${esc(q)}</li>`).join('')}</ul></div>`;
+if ((D.others || []).length) h += `<h2>Другие кандидаты</h2><div class="card"><ul>${D.others.map(o => `<li><code>${esc(o.route)}?${esc(o.query)}</code> — ${o.error ? esc(o.error) : `сходство ${esc(o.score)} (${esc(STR[o.strength] || '')})`}</li>`).join('')}</ul></div>`;
+document.getElementById('main').innerHTML = h;
+if (D.pics) {
+  const view = document.getElementById('view');
+  const boxes = (c.diff.regions || []).map(r => `<div class="box" style="left:${r.x * 100}%;top:${r.y * 100}%;width:${r.w * 100}%;height:${r.h * 100}%"></div>`).join('');
+  const modes = [
+    () => `<div class="side"><figure><img src="${D.pics.mobile}" alt=""><figcaption>Мобилка (подогнана под область)</figcaption></figure><figure><img src="${D.pics.design}" alt=""><figcaption>Дизайн (workbench)</figcaption></figure><figure><img src="${D.mobile}" alt=""><figcaption>Исходный скриншот</figcaption></figure></div>`,
+    () => `<div class="stack"><img src="${D.pics.design}" alt=""><img class="top" id="ov" src="${D.pics.mobile}" alt="" style="opacity:.5"></div><label class="m">Мобилка <input type="range" id="op" min="0" max="100" value="50"> дизайн</label>`,
+    () => `<div class="stack wrapbox"><img src="${D.pics.diff}" alt="">${boxes}</div>`,
+  ];
+  const show = i => {
+    view.innerHTML = modes[i]();
+    document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', Number(b.dataset.i) === i));
+    const op = document.getElementById('op');
+    if (op) op.oninput = () => { document.getElementById('ov').style.opacity = String(1 - op.value / 100); };
+  };
+  document.getElementById('tabs').onclick = e => { if (e.target.dataset.i) show(Number(e.target.dataset.i)); };
+  show(0);
+}
+</script></body></html>

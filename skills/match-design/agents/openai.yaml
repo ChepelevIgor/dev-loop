@@ -1,0 +1,4 @@
+interface:
+  display_name: "Сверить с дизайном"
+  short_description: "Находит экран со скриншота в workbench и показывает отличия"
+  default_prompt: "Используй $match-design с этим скриншотом, чтобы сверить мобилку с дизайном."

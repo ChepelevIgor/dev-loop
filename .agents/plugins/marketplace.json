@@ -1,0 +1,10 @@
+{
+  "name": "local-dev-loop",
+  "interface": {"displayName": "Local Dev Loop"},
+  "plugins": [{
+    "name": "dev-loop",
+    "source": {"source": "local", "path": "./"},
+    "policy": {"installation": "AVAILABLE", "authentication": "ON_INSTALL"},
+    "category": "Developer Tools"
+  }]
+}

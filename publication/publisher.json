@@ -1,0 +1,9 @@
+{
+  "publication_authorized": true,
+  "authorization_date": "2026-10-21",
+  "authorization_scope": "The publisher explicitly requested recreation of ChepelevIgor/dev-loop as a public source repository with one initial commit, without restoring prior releases or the release journal.",
+  "github_owner": "ChepelevIgor",
+  "repository": "https://github.com/ChepelevIgor/dev-loop",
+  "openai_identity_verification": "not_checked",
+  "openai_submission": "not_submitted"
+}

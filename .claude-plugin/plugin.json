@@ -1,0 +1,11 @@
+{
+  "name": "dev-loop",
+  "version": "0.1.0",
+  "description": "Задачи по макетам, проверка приложения и ревью кода. Понятные команды и подробная справка help.",
+  "author": {
+    "name": "Igor Chepelev"
+  },
+  "hooks": "./.claude-plugin/hooks.json",
+  "homepage": "https://github.com/ChepelevIgor/dev-loop",
+  "repository": "https://github.com/ChepelevIgor/dev-loop"
+}

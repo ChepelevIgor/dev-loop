@@ -1,0 +1,180 @@
+<title>__TITLE__</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a proof sheet — the phones in the middle, what's missing pinned to the margins, the decision at the foot. */
+:root {
+  --paper: #eef0ee;      /* sheet */
+  --card: #fbfcfb;       /* phone mat, panels */
+  --ink: #1d2421;        /* text */
+  --muted: #5f6b66;      /* secondary text */
+  --rule: #d3d9d6;       /* hairlines */
+  --mark: #d2402b;       /* proofreader's red: changed regions */
+  --go: #2f7a4f;         /* ready */
+  --warn: #b0731a;       /* missing */
+  --unknown: #6d7a90;    /* not checked */
+  --accent: #1f5c4a;     /* primary action */
+  --on-accent: #ffffff;
+  --display: "Onest", "Helvetica Neue", Arial, sans-serif;
+  --body: "Onest", "Helvetica Neue", Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --paper: #141917; --card: #1c2320; --ink: #e5ebe8; --muted: #9aa6a1; --rule: #2e3833; --mark: #ff6a52; --go: #5cc08a; --warn: #e3a54a; --unknown: #9aa7bd; --accent: #4fae8c; --on-accent: #0d1512; color-scheme: dark }
+}
+:root[data-theme="dark"] { --paper: #141917; --card: #1c2320; --ink: #e5ebe8; --muted: #9aa6a1; --rule: #2e3833; --mark: #ff6a52; --go: #5cc08a; --warn: #e3a54a; --unknown: #9aa7bd; --accent: #4fae8c; --on-accent: #0d1512; color-scheme: dark }
+body { background: var(--paper); color: var(--ink); font: 15px/1.5 var(--body); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 120px }
+.wrap { max-width: 1240px; margin: 0 auto; display: grid; gap: 22px }
+header { display: grid; gap: 6px }
+h1 { font: 700 26px/1.2 var(--display); margin: 0; text-wrap: balance }
+.meta { color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap; gap: 6px 14px }
+.meta code, .mono { font-family: var(--mono); font-size: 12px }
+.lede { max-width: 68ch; margin: 0 }
+.route { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 20px; align-items: start }
+.route-head { grid-column: 1 / -1; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; border-top: 1px solid var(--rule); padding-top: 14px }
+.route-head h2 { font: 600 18px/1.3 var(--display); margin: 0 }
+.route-head .what { color: var(--muted); font-size: 14px }
+.phones { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center }
+figure { margin: 0; display: grid; gap: 8px; justify-items: center }
+figcaption { font-size: 13px; font-weight: 600; letter-spacing: .02em }
+.phone { position: relative; width: min(300px, 80vw); aspect-ratio: 430 / 932; max-width: 100%; background: var(--card); border: 1px solid var(--rule); border-radius: 18px; overflow: hidden }
+.phone img { width: 100%; height: 100%; display: block; object-fit: contain }
+.phone .none { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 24px; color: var(--muted); font-size: 14px }
+.box { position: absolute; border: 2px solid var(--mark); border-radius: 6px; pointer-events: none }
+.box b { position: absolute; top: -22px; right: -2px; min-width: 20px; height: 20px; border-radius: 10px; background: var(--mark); color: var(--card); font: 600 12px/20px var(--body); text-align: center; padding: 0 4px }
+.side { display: grid; gap: 12px; min-width: 0 }
+.check { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: 12px 14px; display: grid; gap: 6px; min-width: 0 }
+.check h3 { margin: 0; font: 600 14px/1.3 var(--body); display: flex; gap: 8px; align-items: center; justify-content: space-between }
+.pill { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap }
+.pill.ok { color: var(--go) } .pill.missing { color: var(--warn) } .pill.unknown { color: var(--unknown) }
+.check p { margin: 0; color: var(--muted); font-size: 13px }
+.check ul { margin: 0; padding-left: 18px; font-size: 13px; display: grid; gap: 2px }
+.check li { overflow-wrap: anywhere }
+.err { color: var(--mark); font-size: 14px }
+.issue { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: 14px 16px; display: grid; gap: 8px; min-width: 0 }
+.issue h2 { margin: 0; font: 600 16px/1.3 var(--display) }
+.issue .it { font-weight: 600 }
+.issue .tags { display: flex; gap: 6px; flex-wrap: wrap; font-size: 12px; color: var(--muted) }
+.issue .tags span { border: 1px solid var(--rule); border-radius: 999px; padding: 2px 8px }
+.issue pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font: 13px/1.5 var(--body); color: var(--ink); max-height: 340px; overflow: auto }
+.issue summary { cursor: pointer; color: var(--muted); font-size: 13px }
+.changed { font-size: 13px; color: var(--muted) }
+.changed summary { cursor: pointer }
+.changed ul { columns: 2 260px; padding-left: 18px; margin: 8px 0 0 }
+.bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 1px solid var(--rule); padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+.bar-in { max-width: 1240px; margin: 0 auto; padding-block: 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap }
+textarea { flex: 1 1 260px; min-width: 0; min-height: 40px; height: 40px; max-height: 120px; resize: vertical; font: 14px/1.4 var(--body); color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 8px; padding: 8px 10px }
+button { font: 600 14px/1 var(--body); border-radius: 8px; padding: 12px 18px; cursor: pointer; border: 1px solid var(--rule); background: var(--card); color: var(--ink) }
+button.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent) }
+button:disabled { opacity: .5; cursor: default }
+button:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.status { width: 100%; font-size: 13px; color: var(--muted); margin: 0 }
+.copy { font-family: var(--mono); font-size: 12px; user-select: all; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 4px 6px }
+@media (max-width: 900px) { .route { grid-template-columns: 1fr } .route .side { order: 2 } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1 id="title"></h1>
+    <div class="meta" id="meta"></div>
+    <p class="lede" id="lede"></p>
+  </header>
+  <section class="issue" id="issue"></section>
+  <div id="whole"></div>
+  <div id="routes"></div>
+  <details class="changed" id="changed"><summary></summary><ul></ul></details>
+</div>
+<div class="bar">
+  <div class="bar-in" id="decide">
+    <button class="primary" id="push" type="button">Push to design</button>
+    <textarea id="note" placeholder="What to rework (for Rework)" aria-label="What to rework"></textarea>
+    <button id="rework" type="button">Rework</button>
+    <p class="status" id="status" role="status"></p>
+  </div>
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const STATUS = { ok: 'ready', missing: 'missing', unknown: 'not checked' };
+const ORDER = [['ds', 'mobile'], ['backend']]; // per screen: left margin · right margin
+
+function check(c) {
+  if (!c) return '';
+  return `<section class="check"><h3>${esc(c.title)}<span class="pill ${esc(c.status)}">${STATUS[c.status] || esc(c.status)}</span></h3>
+    <p>${esc(c.summary)}</p>${c.items && c.items.length ? `<ul>${c.items.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}</section>`;
+}
+function phone(file, regions, title, empty) {
+  const boxes = (regions || []).map((g, i) => `<span class="box" style="left:${g.x * 100}%;top:${g.y * 100}%;width:${g.w * 100}%;height:${g.h * 100}%"><b>${i + 1}</b></span>`).join('');
+  return `<figure><div class="phone">${file ? `<img src="${esc(file)}" alt="${esc(title)}">${boxes}` : `<div class="none">${esc(empty)}</div>`}</div><figcaption>${esc(title)}</figcaption></figure>`;
+}
+function render() {
+  $('title').textContent = DATA.title;
+  document.title = `Before and after: ${DATA.title}`;
+  $('meta').innerHTML = `<span>${esc(DATA.repo)}</span><span>branch <code>${esc(DATA.branch)}</code></span><span>commit <code>${esc(DATA.sha.slice(0, 8))}</code></span><span>${esc(new Date(DATA.at).toLocaleString())}</span>`;
+  const news = DATA.routes.filter((r) => r.isNew).length;
+  $('lede').textContent = DATA.summary || (news === DATA.routes.length ? 'A new screen: the design repo does not have it yet. Around it: what is missing.' : 'Left: the screen as it is in main now; right: after your work. Changed places are outlined and numbered. Around them: what is missing.');
+  // the repo's own checks are about the whole work, not a screen: shown once
+  $('whole').innerHTML = DATA.check ? check(DATA.check) : '';
+  const side = (route, keys) => `<div class="side">${keys.map((k) => check((DATA.checks[route] || {})[k])).join('')}</div>`;
+  $('routes').innerHTML = DATA.routes.map((r) => `<section class="route">
+    <div class="route-head"><h2>${esc(r.route)}</h2>${r.query ? `<span class="what">Data: <code>${esc(r.query)}</code></span>` : ''}<span class="what">${r.error ? '' : r.isNew ? 'new screen' : `${esc(r.changed)}% of the screen changed · regions ${(r.regions || []).length}`}</span></div>
+    ${side(r.route, ORDER[0])}
+    <div>${r.error ? `<p class="err">${esc(r.error)}</p>` : ''}<div class="phones">${r.isNew ? phone(r.after, [], 'New screen') : phone(r.before, r.regions, 'Now (main)', 'no shot') + phone(r.after, r.regions, 'After your work')}</div></div>
+    ${side(r.route, ORDER[1])}
+  </section>`).join('');
+  // the Linear task this work belongs to (the main handoff skill made it): its id goes into the PR title
+  const is = DATA.task;
+  $('issue').hidden = !is;
+  $('issue').innerHTML = is ? `<h2>Linear task</h2><div class="it">${is.url ? `<a href="${esc(is.url)}" target="_blank" rel="noopener">${esc(is.id)}</a>` : esc(is.id)}</div><p class="changed" style="margin:0">The PR to the shared design repo carries its id.</p>` : '';
+  const ch = DATA.changed || [];
+  $('changed').hidden = !ch.length;
+  $('changed').querySelector('summary').textContent = `Files in the design repo · ${ch.length}`;
+  $('changed').querySelector('ul').innerHTML = ch.map((f) => `<li class="mono">${esc(f)}</li>`).join('');
+}
+render();
+
+// ── the decision: goes to the Claude session that published the page (comments), and is kept (db) ──
+let comments = null;
+let db = null;
+let user = null;
+const use = (name) => (window.claude && window.claude.use ? window.claude.use(name).catch(() => null) : Promise.resolve(null));
+use('comments').then((c) => (comments = c));
+Promise.all([use('db'), use('user')]).then(([d, u]) => { db = d; user = u; });
+
+function message(action, note) {
+  return `[handoff-push ${DATA.slug} ${DATA.sha.slice(0, 12)}] ${action === 'push' ? 'Push to design' : `Rework: ${note}`}`;
+}
+function fallback(text) {
+  $('status').innerHTML = `This page cannot reach Claude. Send this line in the chat: <span class="copy">${esc(text)}</span>`;
+}
+async function decide(action) {
+  const note = $('note').value.trim();
+  if (action === 'rework' && !note) { $('status').textContent = 'Write what to rework and press again.'; $('note').focus(); return; }
+  const text = message(action, note);
+  $('push').disabled = $('rework').disabled = true;
+  // first, while the click is fresh: Claude accepts the signal only from the viewer's own gesture
+  let sent = false;
+  try {
+    if (comments && comments.sendToClaude) {
+      const can = await comments.canSendToClaude();
+      if (can === 'available') {
+        await comments.sendToClaude({ anchor: await comments.anchorFor($('decide')), text });
+        sent = true;
+      } else if (can === 'no_session') $('status').textContent = 'The Claude session that published the page is closed. The answer is kept — open it and write "decision on the page".';
+    }
+  } catch (e) { /* falls back below */ }
+  try {
+    if (db) await db.doc('decisions/latest').set({ action, note, sha: DATA.sha, at: new Date().toISOString(), by: user && user.id ? await user.id() : null });
+  } catch (e) { /* the comment is what starts the work; the record is a backup */ }
+  if (sent) $('status').textContent = action === 'push' ? 'Sent: Claude pushes the branch and opens a PR to the design repo. The link comes back as a reply.' : 'Sent: Claude is reworking it, the page updates itself.';
+  else if (!$('status').textContent) fallback(text);
+  $('push').disabled = $('rework').disabled = false;
+}
+$('push').addEventListener('click', () => decide('push'));
+$('rework').addEventListener('click', () => decide('rework'));
+</script>

@@ -1,0 +1,8 @@
+{
+  "about": "Defaults for the handoff skills. A team sets its own repos in ~/.handoff.json (designRepo, mobileRepo, home, base, lightPaths) — setup writes them; nothing team-specific ships here.",
+  "designRepo": null,
+  "mobileRepo": null,
+  "home": "~/handoff",
+  "base": "main",
+  "lightPaths": ["workbench.config.json", "package.json", "app", "src/shared/theme", "src/web/registry", "knowledge-base/tasks", "mobile-forks.json"]
+}

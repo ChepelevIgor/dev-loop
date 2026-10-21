@@ -1,0 +1,54 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "dev-loop",
+  "version": "0.1.0",
+  "description": "Задачи по макетам, проверка приложения и ревью кода. Понятные команды и подробная справка help.",
+  "author": {
+    "name": "Igor Chepelev",
+    "url": "https://github.com/ChepelevIgor"
+  },
+  "homepage": "https://github.com/ChepelevIgor/dev-loop",
+  "keywords": [
+    "code-review",
+    "design-handoff",
+    "linear",
+    "mobile",
+    "simulator",
+    "testing"
+  ],
+  "extensions": {
+    "com.openai": {
+      "requires_local_executor": true,
+      "interface": {
+        "displayName": "Dev Loop",
+        "shortDescription": "Макеты, задачи и проверка кода",
+        "longDescription": "Dev Loop помогает передать макеты разработчикам и проверить результат. Он сравнивает макеты с текущими экранами, проверяет правила оформления и возможности проекта, готовит задачи Linear. Для разработки сохраняет ход задачи, проверяет приложение по шагам, собирает замечания к коду и повторяет проверки после исправлений. Навык help объясняет настройку, каждый навык и кнопки отчёта. Нужна локальная среда macOS или Linux; зависимости зависят от выбранного действия. Работа с макетами требует Node.js и Chrome, проверка приложения — симулятора или эмулятора, публикация — доступа к соответствующему сервису. Установка не запускает фоновую работу.",
+        "developerName": "Igor Chepelev",
+        "category": "Developer Tools",
+        "capabilities": [
+          "Задачи Linear по макетам",
+          "Проверка макетов",
+          "Проверка задач до и после",
+          "Ревью PR и разбор замечаний",
+          "Продолжение сохранённых задач",
+          "Подробная справка"
+        ],
+        "websiteURL": "https://github.com/ChepelevIgor/dev-loop",
+        "defaultPrompt": [
+          "Проверь задачу Linear T-10 до и после изменений через sim-verify-task.",
+          "Закрой все треды PR 2 через close-threads.",
+          "Объясни через help, как работает Dev Loop и какой навык мне выбрать."
+        ],
+        "brandColor": "#2357C6",
+        "brandColorDark": "#8CB4FF",
+        "composerIcon": "./assets/dev-loop.svg",
+        "composerIconDark": "./assets/dev-loop-dark.svg",
+        "logo": "./assets/dev-loop.svg",
+        "logoDark": "./assets/dev-loop-dark.svg",
+        "supportURL": "https://github.com/ChepelevIgor/dev-loop/blob/main/SUPPORT.md",
+        "privacyPolicyURL": "https://github.com/ChepelevIgor/dev-loop/blob/main/PRIVACY.md"
+      }
+    }
+  },
+  "repository": "https://github.com/ChepelevIgor/dev-loop"
+}

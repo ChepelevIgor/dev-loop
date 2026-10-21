@@ -1,0 +1,17 @@
+{
+  "name": "local-dev-loop",
+  "owner": {
+    "name": "Igor Chepelev"
+  },
+  "plugins": [
+    {
+      "name": "dev-loop",
+      "source": "./",
+      "description": "Задачи по макетам, проверка приложения и ревью кода. Понятные команды и подробная справка help.",
+      "category": "Developer Tools"
+    }
+  ],
+  "metadata": {
+    "description": "Задачи по макетам, проверка приложения и ревью кода. Понятные команды и подробная справка help."
+  }
+}

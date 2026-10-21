@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bug check</title>
+<style>
+:root{--bg:#f6f5f2;--card:#fff;--ink:#1b1b1a;--mute:#6d6b66;--line:#e4e1da;--bug:#c62f2f;--ok:#1f8a4c;--part:#c7791a;--acc:#2f5bd6}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#17171a;--card:#202024;--ink:#ecebe7;--mute:#9a988f;--line:#33333a}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:21px;margin:0 0 4px}h2{font-size:16px;margin:26px 0 8px}.m{color:var(--mute);font-size:13px}
+a{color:var(--acc)}
+.v{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:999px;color:#fff;vertical-align:middle}
+.v-bug{background:var(--bug)}.v-not-a-bug{background:var(--ok)}.v-cannot-reproduce{background:var(--part)}.v-needs-info,.v-pending{background:var(--mute)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin:10px 0}
+.lead{font-size:16px}
+.ea{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ea .card{margin:0}.ea b{display:block;font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:0}dt{color:var(--mute)}dd{margin:0;overflow-wrap:anywhere}
+.steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px}
+.step.bad{border-color:var(--bug);box-shadow:0 0 0 2px color-mix(in srgb,var(--bug) 20%,transparent)}
+.step img{width:100%;border:1px solid var(--line);border-radius:6px;background:#000;cursor:zoom-in}
+table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px}th{color:var(--mute);font-weight:600;font-size:12px;text-transform:uppercase}
+.s-matches{color:var(--ok);font-weight:700}.s-differs,.s-missing{color:var(--bug);font-weight:700}.s-unclear{color:var(--mute);font-weight:600}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin:8px 0 2px;max-width:420px}.bar i{display:block;height:100%;background:var(--ok)}
+.n{font-weight:700;color:var(--mute);margin-right:4px}
+ul{margin:6px 0;padding-left:20px}
+code{font:12px ui-monospace,Menlo,monospace;background:color-mix(in srgb,var(--line) 50%,transparent);padding:1px 4px;border-radius:4px}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
+#zoom img{max-width:100%;max-height:100%}
+@media(max-width:700px){.ea{grid-template-columns:1fr}}
+</style></head><body>
+<main id="main"></main>
+<div id="zoom"><img alt=""></div>
+<script>
+const DATA = /*__DATA__*/[];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LABEL = {'bug':'Баг', 'not-a-bug':'Не баг', 'cannot-reproduce':'Не воспроизводится', 'needs-info':'Нужны данные', 'pending':'Ещё не проверено'};
+const ST = {matches:'сходится', differs:'расходится', missing:'нет в мобилке', unclear:'неясно'};
+const SRC = {task:'задача', design:'дизайн', code:'код', spec:'спецификация', docs:'документация'};
+const b = DATA.bug || {}, r = DATA.report, v = r ? r.verdict : 'pending';
+document.title = `${b.id || 'Bug'} — ${LABEL[v] || v}`;
+let h = `<h1>${esc(b.id)} · ${esc(b.title)} <span class="v v-${esc(v)}">${esc(LABEL[v] || v)}</span></h1>`;
+h += `<div class="m">${b.source_url ? `<a href="${esc(b.source_url)}" rel="noreferrer">Задача</a> · ` : ''}${r ? `запуск ${esc(r.run)}${r.at ? ' · ' + esc(r.at) : ''}` : 'проверки ещё не было'}</div>`;
+if (!r) {
+  h += `<div class="card">Отчёт появится после проверки на симуляторе.</div>`;
+  if (b.reported) h += `<h2>Как описано в задаче</h2><div class="card">${esc(b.reported.actual || '')}</div>`;
+} else {
+  h += `<div class="card lead">${esc(r.summary)}</div>`;
+  const e = r.expected || {};
+  h += `<div class="ea"><div class="card"><b>Ожидается</b>${esc(e.text || '—')}${e.source ? `<div class="m">Источник: ${esc(SRC[e.source] || e.source)}${e.ref ? ` · <code>${esc(e.ref)}</code>` : ''}</div>` : ''}</div>`
+     + `<div class="card"><b>На самом деле</b>${esc(r.actual || '—')}</div></div>`;
+  if ((r.logic || []).length) {
+    const sc = r.logic_score || {};
+    h += `<h2>Бизнес-логика и мобилка</h2><div class="card"><b>${sc.percent == null ? 'Проверить не удалось' : `Сходится ${esc(sc.matches)} из ${esc(sc.checked)} (${esc(sc.percent)}%)`}</b>${sc.unclear ? ` <span class="m">· неясно: ${esc(sc.unclear)}</span>` : ''}`
+      + (sc.percent == null ? '' : `<div class="bar"><i style="width:${Number(sc.percent)}%"></i></div>`)
+      + `<table><tr><th>Правило</th><th>Источник</th><th>В мобилке</th><th>Доказательство</th></tr>` + r.logic.map(x =>
+        `<tr><td>${esc(x.rule)}${x.note ? `<div class="m">${esc(x.note)}</div>` : ''}</td><td>${esc(SRC[x.source] || x.source)}<div class="m"><code>${esc(x.ref)}</code></div></td>`
+        + `<td class="s-${esc(x.status)}">${esc(ST[x.status] || x.status)}</td><td>${x.step ? `<a href="#step-${esc(x.step)}">шаг ${esc(x.step)}</a>` : ''}${x.code ? `<div><code>${esc(x.code)}</code></div>` : ''}</td></tr>`).join('') + `</table></div>`;
+  }
+  if ((r.steps || []).length) {
+    h += `<h2>Шаги и скриншоты</h2><div class="steps">` + r.steps.map((s, i) =>
+      `<div class="step${s.bad ? ' bad' : ''}" id="step-${i + 1}"><div><span class="n">${i + 1}.</span>${esc(s.action)}</div>`
+      + (s.shot ? `<img src="${esc(s.shot)}" alt="Шаг ${i + 1}">` : '<div class="m">без скриншота</div>')
+      + (s.note ? `<div class="m">${esc(s.note)}</div>` : '') + `</div>`).join('') + `</div>`;
+  }
+  if (r.cause) h += `<h2>Вероятная причина</h2><div class="card">${esc(r.cause.text)}${r.cause.ref ? `<div class="m"><code>${esc(r.cause.ref)}</code></div>` : ''}</div>`;
+  if ((r.questions || []).length) h += `<h2>Открытые вопросы</h2><div class="card"><ul>${r.questions.map(q => `<li>${esc(q)}</li>`).join('')}</ul></div>`;
+  const bd = r.build || {};
+  const env = [['Сборка', [bd.ref, bd.commit].filter(Boolean).join(' @ ')], ['Почему эта сборка', bd.why], ['Устройство', r.device], ['Данные', r.data], ['Логи', r.logs]].filter(x => x[1]);
+  if (env.length) h += `<h2>Где проверено</h2><div class="card"><dl>${env.map(([k, x]) => `<dt>${esc(k)}</dt><dd>${esc(x)}</dd>`).join('')}</dl></div>`;
+}
+if ((DATA.history || []).length) h += `<h2>Прошлые проверки</h2><div class="card"><ul>${DATA.history.map(x => `<li>Запуск ${esc(x.run)}: <span class="v v-${esc(x.verdict || 'pending')}">${esc(LABEL[x.verdict] || x.verdict || '?')}</span> ${esc(x.summary)}</li>`).join('')}</ul></div>`;
+document.getElementById('main').innerHTML = h;
+const zoom = document.getElementById('zoom');
+document.addEventListener('click', e => {
+  if (e.target.matches('.step img')) { zoom.querySelector('img').src = e.target.src; zoom.style.display = 'flex'; }
+  else if (zoom.contains(e.target)) zoom.style.display = 'none';
+});
+</script>
+</body></html>

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Business review (BRIEF)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["metric", "summary", "dod", "cases", "gaps", "base_sha"],
+  "properties": {
+    "metric": {"type": ["string", "null"], "description": "The business metric the task moves; null only with a product gap asking for it."},
+    "summary": {"type": "string", "description": "What changes for the user, in plain words."},
+    "dod": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "cases": {"type": "array", "minItems": 1, "items": {
+      "type": "object", "additionalProperties": false, "required": ["text", "given", "when", "then"],
+      "properties": {"text": {"type": "string", "description": "Exactly one task.json acceptance criterion."},
+        "given": {"type": "string"}, "when": {"type": "string"}, "then": {"type": "string"}}}},
+    "gaps": {"type": "array", "items": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "text", "blocking"],
+      "properties": {"kind": {"enum": ["design", "data", "product"]}, "text": {"type": "string"},
+        "blocking": {"type": "boolean", "description": "true: the work cannot go on without the answer."}}}},
+    "base_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+  }
+}

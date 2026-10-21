@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "QA test cases (QA)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["author", "independent", "cases"],
+  "properties": {
+    "author": {"type": "string", "description": "codex, a fresh subagent, or self."},
+    "independent": {"type": "boolean", "description": "true only when written by a separate reviewer that did not plan the code."},
+    "cases": {"type": "array", "minItems": 1, "items": {
+      "type": "object", "additionalProperties": false, "required": ["title", "criterion", "given", "when", "then", "steps"],
+      "properties": {"title": {"type": "string"}, "criterion": {"type": "string", "description": "Exactly one task.json acceptance criterion."},
+        "given": {"type": "string"}, "when": {"type": "string"}, "then": {"type": "string"},
+        "steps": {"type": "array", "items": {"type": "string"}}}}}
+  }
+}

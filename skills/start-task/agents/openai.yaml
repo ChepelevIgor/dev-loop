@@ -1,0 +1,4 @@
+interface:
+  display_name: "Выполнить задачу"
+  short_description: "Выполняет задачу по номеру Linear или описанию"
+  default_prompt: "Используй $start-task T-10, чтобы выполнить задачу и проверить результат."

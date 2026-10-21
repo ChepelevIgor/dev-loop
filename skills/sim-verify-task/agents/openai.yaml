@@ -1,0 +1,4 @@
+interface:
+  display_name: "Проверить задачу до и после"
+  short_description: "Проверяет до и после по задаче Linear, описанию или PR"
+  default_prompt: "Используй $sim-verify-task PR 2, чтобы проверить результат до и после изменений."

@@ -1,0 +1,420 @@
+<title>__TITLE__</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a contact sheet of designs — each card is one proof with its verdict; the tasks they become sit on top. */
+:root {
+  --paper: #eef0ee; --card: #fbfcfb; --ink: #1d2421; --muted: #5f6b66; --rule: #d3d9d6;
+  --go: #2f7a4f; --warn: #b0731a; --unknown: #6d7a90; --bad: #b4422f; --accent: #1f5c4a; --on-accent: #ffffff; --sel: #e2ece7;
+  --body: "Onest", "Helvetica Neue", Arial, sans-serif; --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --paper: #141917; --card: #1c2320; --ink: #e5ebe8; --muted: #9aa6a1; --rule: #2e3833; --go: #5cc08a; --warn: #e3a54a; --unknown: #9aa7bd; --bad: #ff7a62; --accent: #4fae8c; --on-accent: #0d1512; --sel: #23312b; color-scheme: dark }
+}
+:root[data-theme="dark"] { --paper: #141917; --card: #1c2320; --ink: #e5ebe8; --muted: #9aa6a1; --rule: #2e3833; --go: #5cc08a; --warn: #e3a54a; --unknown: #9aa7bd; --bad: #ff7a62; --accent: #4fae8c; --on-accent: #0d1512; --sel: #23312b; color-scheme: dark }
+body { background: var(--paper); color: var(--ink); font: 15px/1.5 var(--body); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 130px }
+.wrap { max-width: 1240px; margin: 0 auto; display: grid; gap: 22px }
+h1 { font: 700 26px/1.2 var(--body); margin: 0; text-wrap: balance }
+h2 { font: 600 18px/1.3 var(--body); margin: 0 }
+.meta { color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap; gap: 6px 14px }
+code, .mono { font-family: var(--mono); font-size: 12px }
+.lede { max-width: 70ch; margin: 0 }
+.panel { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: 14px 16px; display: grid; gap: 10px; min-width: 0 }
+.task { display: grid; gap: 4px; padding-top: 10px; border-top: 1px solid var(--rule) }
+.task:first-of-type { border-top: 0; padding-top: 0 }
+.task .head { display: flex; gap: 8px; flex-wrap: wrap; align-items: baseline }
+.chip { font-size: 12px; border: 1px solid var(--rule); border-radius: 999px; padding: 1px 8px; color: var(--muted); white-space: nowrap }
+.chip.on { color: var(--go); border-color: currentColor }
+.chip.wait { color: var(--warn); border-color: currentColor }
+.task pre { margin: 6px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; font: 13px/1.5 var(--body); max-height: 320px; overflow: auto }
+.task summary, details summary { cursor: pointer; color: var(--muted); font-size: 13px }
+.design { background: var(--card); border: 1px solid var(--rule); border-radius: 12px; padding: 16px; display: grid; gap: 14px; grid-template-columns: auto minmax(0, 1fr) }
+.design.off { opacity: .55 }
+.design .top { grid-column: 1 / -1; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap }
+.phones { display: flex; gap: 14px; flex-wrap: wrap }
+figure { margin: 0; display: grid; gap: 6px; justify-items: center }
+figcaption { font-size: 12px; font-weight: 600; color: var(--muted) }
+.phone { width: min(220px, 40vw); aspect-ratio: 430 / 932; background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; overflow: hidden; display: grid; place-items: center }
+.phone img { width: 100%; height: 100%; object-fit: contain; display: block }
+.phone .none { padding: 16px; text-align: center; color: var(--muted); font-size: 13px }
+.side { display: grid; gap: 10px; align-content: start; min-width: 0 }
+.check { border: 1px solid var(--rule); border-radius: 8px; padding: 10px 12px; display: grid; gap: 4px; min-width: 0 }
+.check h3 { margin: 0; font: 600 13px/1.3 var(--body); display: flex; justify-content: space-between; gap: 8px }
+.pill { font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap }
+.pill.ok { color: var(--go) } .pill.warn { color: var(--warn) } .pill.missing { color: var(--bad) } .pill.unknown { color: var(--unknown) }
+.check p { margin: 0; color: var(--muted); font-size: 12px }
+.check ul { margin: 0; padding-left: 16px; font-size: 12px; display: grid; gap: 2px }
+.check li { overflow-wrap: anywhere }
+.choice { display: flex; gap: 6px; flex-wrap: wrap }
+.choice button { font: 600 13px/1 var(--body); padding: 9px 12px; border-radius: 8px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer }
+.choice button[aria-pressed="true"] { background: var(--sel); border-color: var(--accent) }
+.rework { display: grid; gap: 6px }
+textarea { width: 100%; box-sizing: border-box; min-height: 64px; resize: vertical; font: 14px/1.4 var(--body); color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 8px; padding: 8px 10px }
+button.primary { font: 600 14px/1 var(--body); border-radius: 8px; padding: 12px 18px; cursor: pointer; background: var(--accent); color: var(--on-accent); border: 1px solid var(--accent) }
+a.plain { text-decoration: none; display: inline-block }
+[hidden] { display: none !important }
+button.plain, a.plain { font: 600 13px/1 var(--body); border-radius: 8px; padding: 9px 12px; cursor: pointer; background: var(--card); color: var(--ink); border: 1px solid var(--rule); justify-self: start }
+button:disabled { opacity: .5; cursor: default }
+button:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.note { font-size: 12px; color: var(--muted); margin: 0 }
+.bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 1px solid var(--rule); padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+.bar-in { max-width: 1240px; margin: 0 auto; padding-block: 12px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap }
+.bar .sum { flex: 1 1 260px; font-size: 13px; color: var(--muted); min-width: 0 }
+.status { width: 100%; font-size: 13px; color: var(--muted); margin: 0 }
+select { font: 13px/1.3 var(--body); color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 8px; padding: 6px 8px; max-width: 100% }
+.link { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 13px }
+.review { display: grid; gap: 4px; font-size: 13px; border-left: 3px solid var(--rule); padding-left: 10px }
+.review.gapped { border-left-color: var(--warn) }
+.review ul { margin: 0; padding-left: 18px }
+.gaps li { color: var(--warn) }
+.copy { font-family: var(--mono); font-size: 12px; user-select: all; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 4px 6px }
+.compare { display: grid; gap: 8px; justify-items: start; align-content: start }
+.views { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; font-size: 12px; color: var(--muted) }
+.views button { font: 600 12px/1 var(--body); padding: 7px 10px; border-radius: 999px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer }
+.views button[aria-pressed="true"] { background: var(--sel); border-color: var(--accent) }
+.stack { position: relative }
+.stack img { position: absolute; inset: 0 }
+.stack.difference img.top { mix-blend-mode: difference }
+.stack img.top { cursor: grab; touch-action: none; user-select: none; -webkit-user-drag: none }
+.stack img.top:active { cursor: grabbing }
+.stack img.top:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px }
+.nudge { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); flex-wrap: wrap }
+.nudge button { font: 600 12px/1 var(--body); padding: 6px 9px; border-radius: 8px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer }
+.stack.difference { background: #000 }
+.box { position: absolute; border: 2px solid var(--bad); border-radius: 3px; pointer-events: none }
+.slider { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--muted) }
+.slider input { width: 140px; accent-color: var(--accent) }
+.cond { font-size: 12px; margin: 0; max-width: 460px }
+.sources { display: grid; gap: 6px; font-size: 12px; max-width: 460px; margin: 0; padding: 0; list-style: none }
+.sources li { border-left: 3px solid var(--rule); padding-left: 8px; overflow-wrap: anywhere }
+.sources b { color: var(--ink) }
+.sources a { color: var(--accent) }
+.cond.off { color: var(--warn) }
+@media (max-width: 760px) { .design { grid-template-columns: 1fr } }
+</style>
+
+<div class="wrap">
+  <header style="display:grid;gap:6px">
+    <h1 id="title"></h1>
+    <div class="meta" id="meta"></div>
+    <p class="lede" id="lede"></p>
+  </header>
+  <section class="panel" id="tasks"></section>
+  <div id="designs" style="display:grid;gap:16px"></div>
+</div>
+<div class="bar">
+  <div class="bar-in" id="decide">
+    <span class="sum" id="sum"></span>
+    <a class="plain" id="artifact-link" href="#" target="_blank" rel="noopener" hidden>Claude page ↗</a>
+    <button class="plain" id="make-artifact" type="button" hidden>Create Claude artifact</button>
+    <button class="plain" id="create" type="button">Create Linear tasks</button>
+    <button class="primary" id="push" type="button">Push to design</button>
+    <p class="note" id="push-note" style="width:100%" hidden></p>
+    <p class="status" id="status" role="status"></p>
+  </div>
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const TOKEN = new URLSearchParams(location.search).get('t');
+const LOCAL = location.protocol === 'http:' && /^(127\.0\.0\.1|localhost)$/.test(location.hostname) && Boolean(TOKEN);
+const SOURCE_BASE = /*__SOURCE_BASE__*/null;
+const STATUS = { ok: 'ready', warn: 'notes', missing: 'missing', unknown: 'not checked' };
+const KEY = `handoff:${DATA.batch}:${DATA.version}`;
+// state per design: take | rework | skip; already sent designs stay as they are
+const sentDesigns = new Map(DATA.tasks.filter((t) => t.sent).flatMap((t) => (t.sent.designs || t.designs).map((d) => [d, t])));
+let state = {};
+try { state = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { state = {}; }
+for (const d of DATA.designs) if (!state[d.id]) state[d.id] = { choice: 'take', note: '' };
+for (const d of DATA.designs) { if (!state[d.id].view) state[d.id].view = 'side'; if (state[d.id].opacity == null) state[d.id].opacity = 50; if (state[d.id].dx == null) { state[d.id].dx = 0; state[d.id].dy = 0; } }
+// the design over "now" can be moved by hand (mouse, finger, arrows): offsets in screenshot pixels (430 × 932)
+const SHOT = { w: 430, h: 932 };
+const shift = (s) => `translate(${(s.dx / SHOT.w) * 100}%, ${(s.dy / SHOT.h) * 100}%)`;
+// which Linear task each planned task goes to: a found one (the agent's suggestion first) or a new one
+if (!state.links) state.links = {};
+for (const t of DATA.tasks) if (!state.links[t.id]) state.links[t.id] = t.existing || (t.matches && t.matches.suggested) || 'new';
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* private window */ } };
+const variantKey = (id) => {
+  const d = DATA.designs.find((d) => d.id === id) || {};
+  return JSON.stringify([d.route ?? null, String(d.condition || '').trim().toLowerCase().replace(/\s+/g, ' ')]);
+};
+const taskOf = (id) => DATA.tasks.find((t) => t.side === 'client' && t.designs.includes(id));
+
+function check(c) {
+  if (!c) return '';
+  return `<section class="check"><h3>${esc(c.title)}<span class="pill ${esc(c.status)}">${STATUS[c.status] || esc(c.status)}</span></h3><p>${esc(c.summary)}</p>${c.items && c.items.length ? `<ul>${c.items.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}</section>`;
+}
+function phone(file, caption, empty) {
+  return `<figure><div class="phone">${file ? `<img src="${esc(file)}" alt="${esc(caption)}">` : `<div class="none">${esc(empty)}</div>`}</div><figcaption>${esc(caption)}</figcaption></figure>`;
+}
+// Pixel perfect: the design over the screen as it is now — overlay with a slider, a difference blend, the changes map
+const VIEWS = [['side', 'Side by side'], ['overlay', 'Overlay'], ['difference', 'Difference'], ['changes', 'Changes']];
+function condLine(d) {
+  if (d.isNew !== false) return d.condition ? `<p class="cond">Condition: ${esc(d.condition)}</p>` : '<p class="cond off">Condition not stated: under which data the screen looks like this?</p>';
+  if (!d.now || d.nowError) return `<p class="cond off">Design: ${esc(d.condition || 'condition not stated')}. Now: comparison unavailable.</p>`;
+  if (!d.condition) return '<p class="cond off">Condition not stated: "now" is shown with the default data, so the difference may come from data, not from the design.</p>';
+  if (d.now && !d.matched) return `<p class="cond off">Design: ${esc(d.condition)}. Now: default data${d.nowQuery ? ` <code>?${esc(d.nowQuery)}</code>` : ''} — no recorded data state opens this condition, so part of the difference is data.</p>`;
+  return `<p class="cond">Both under: ${esc(d.condition)}${d.nowQuery ? ` <code>?${esc(d.nowQuery)}</code>` : ''}</p>`;
+}
+function compareBlock(d) {
+  const s = state[d.id];
+  const now = d.nowError ? null : d.now;
+  const can = d.isNew === false && now && d.shot;
+  const phones = `<div class="phones">${d.isNew === false ? phone(now, 'Now · design repo', d.nowError || 'no shot') : ''}${phone(d.shot, 'New design · designer\'s file', 'no shot')}</div>`;
+  if (!can) return `<div class="compare">${phones}${condLine(d)}${sources(d)}</div>`;
+  const views = `<div class="views" role="group" aria-label="Pixel perfect for ${esc(d.id)}">Pixel perfect: ${VIEWS.map(([k, label]) => `<button type="button" data-view="${k}" data-id="${esc(d.id)}" aria-pressed="${s.view === k}">${label}</button>`).join('')}</div>`;
+  let body = phones;
+  if (s.view === 'overlay' || s.view === 'difference') {
+    body = `<figure><div class="phone stack ${s.view === 'difference' ? 'difference' : ''}"><img src="${esc(d.now)}" alt="Now in the app"><img class="top" id="top-${esc(d.id)}" data-drag="${esc(d.id)}" tabindex="0" draggable="false" src="${esc(d.shot)}" alt="Design — drag it or use the arrow keys to line it up" style="opacity:${s.view === 'difference' ? 1 : s.opacity / 100};transform:${shift(s)}"></div>
+      <figcaption>${s.view === 'difference' ? 'Black — the same pixels; anything bright differs' : 'The design over the screen now'}</figcaption></figure>
+      <div class="nudge">Drag the design (or arrows, Shift = 10 px) · shift <span id="shift-${esc(d.id)}">${s.dx}, ${s.dy} px</span> <button type="button" data-reset="${esc(d.id)}">Reset</button></div>`;
+    if (s.view === 'overlay') body += `<label class="slider">Now<input type="range" min="0" max="100" value="${s.opacity}" data-opacity="${esc(d.id)}" aria-label="Design opacity for ${esc(d.id)}">Design</label>`;
+  } else if (s.view === 'changes') {
+    const boxes = (d.regions || []).map((r) => `<span class="box" style="left:${r.x * 100}%;top:${r.y * 100}%;width:${r.w * 100}%;height:${r.h * 100}%"></span>`).join('');
+    body = d.diff
+      ? `<figure><div class="phone stack"><img src="${esc(d.diff)}" alt="Changed pixels of ${esc(d.id)} in red">${boxes}</div><figcaption>Changed: ${esc(d.changed)}% of the screen · ${(d.regions || []).length} area(s)</figcaption></figure>`
+      : `<figure><div class="phone"><div class="none">${esc(d.diffError || 'no changes map — render again')}</div></div><figcaption>Changes</figcaption></figure>`;
+  }
+  return `<div class="compare">${views}${body}${condLine(d)}${sources(d)}</div>`;
+}
+/** What is compared with what, and where each side can be opened to check it by hand. */
+function sources(d) {
+  const f = d.nowFrom;
+  const gh = f && /^[\w.-]+\/[\w.-]+$/.test(f.repo || '') ? `https://github.com/${f.repo}` : null;
+  const now = d.isNew === false
+    ? `<li><b>Now</b> — the screen <code>${esc(d.route)}</code> in the design repo${f ? ` <code>${esc(f.repo)}</code>, branch <code>${esc(f.ref)}</code>${f.sha ? ` at ${gh ? `<a href="${esc(`${gh}/tree/${f.sha}`)}" target="_blank" rel="noopener">${esc(f.sha.slice(0, 7))}</a>` : `<code>${esc(f.sha.slice(0, 7))}</code>`}` : ''}${d.nowQuery ? `, data <code>?${esc(d.nowQuery)}</code>` : ''}. <a href="${esc(f.url)}" target="_blank" rel="noopener">Open this screen ↗</a> <span class="note">(while the copy's server runs; or open <code>${esc(d.route)}${d.nowQuery ? `?${esc(d.nowQuery)}` : ''}</code> in your own copy of the repo)</span>` : ''}</li>`
+    : `<li><b>Now</b> — no such screen in the design repo yet: <code>${esc(d.route || '?')}</code> is a new screen.</li>`;
+  const open = LOCAL && SOURCE_BASE ? `${SOURCE_BASE}${d.file.split('/').map(encodeURIComponent).join('/')}` : location.protocol === 'file:' ? d.localSource : null;
+  const design = `<li><b>New design</b> — the batch copy <code>${esc(d.file)}</code>${open ? `. <a href="${esc(open)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Open the design ↗</a>` : ''}</li>`;
+  return `<ul class="sources">${now}${design}</ul>`;
+}
+/** Which tasks the current choices would create now. */
+function due() {
+  return DATA.tasks.filter((t) => !t.sent && t.designs.some((d) => state[d].choice === 'take') && !t.designs.some((d) => state[d].choice === 'rework'));
+}
+/** What "Push to design" would push now: one taken variant per screen/condition, none on rework, not pushed yet. */
+function pushable() {
+  const ok = [];
+  const no = [];
+  for (const t of DATA.tasks.filter((x) => x.side === 'client' && !x.pushed)) {
+    const taken = t.designs.filter((d) => state[d].choice === 'take');
+    if (!taken.length || t.designs.some((d) => state[d].choice === 'rework')) continue;
+    // Variants share a screen and condition; different screens and states are all built.
+    const by = new Map();
+    for (const id of taken) { const k = variantKey(id); by.set(k, [...(by.get(k) || []), id]); }
+    const clash = [...by.values()].find((ids) => ids.length > 1);
+    if (clash) no.push(`${t.id}: take one variant of ${clash.join(', ')}`);
+    else ok.push(t);
+  }
+  return { ok, no };
+}
+function linkLine(tasks) {
+  const l = tasks.filter((t) => !t.sent).map((t) => `${t.id}=${state.links[t.id]}`);
+  return l.length ? `; link ${l.join(',')}` : '';
+}
+function linkPicker(t) {
+  if (t.sent) return '';
+  const c = (t.matches && t.matches.candidates) || [];
+  const opts = [['new', 'a new task'], ...c.map((m) => [m.identifier, `${m.identifier} · ${m.title}${m.state ? ` (${m.state})` : ''}`])];
+  if (t.existing && !opts.some(([k]) => k === t.existing)) opts.push([t.existing, `${t.existing} (named by the designer)`]);
+  if (opts.length === 1) return '<p class="note">Linear: a new task (no similar task found)</p>';
+  return `<label class="link">Linear: <select data-link="${esc(t.id)}" aria-label="Linear task for ${esc(t.id)}">${opts.map(([k, label]) => `<option value="${esc(k)}" ${state.links[t.id] === k ? 'selected' : ''}>${esc(label)}</option>`).join('')}</select></label>${t.matches && t.matches.why ? `<p class="note">${esc(t.matches.why)}</p>` : ''}`;
+}
+const GAP = { design: 'design', data: 'data', product: 'product decision' };
+function reviewBlock(t) {
+  const r = t.review;
+  if (!r) return '';
+  const gaps = t.gaps || [];
+  return `<div class="review ${gaps.length ? 'gapped' : ''}">
+    <div><b>Metric:</b> ${r.metric ? esc(r.metric) : '<span class="chip wait">not defined</span>'}</div>
+    <div>${esc(r.summary)}</div>
+    ${gaps.length ? `<div><b>Missing (${gaps.length})</b><ul class="gaps">${gaps.map((g) => `<li>${esc(GAP[g.kind] || g.kind)}${g.setup ? ' (our setup — not sent to Linear)' : ''}: ${esc(g.text)}</li>`).join('')}</ul></div>` : '<div class="note">Nothing missing for this task.</div>'}
+    <details><summary>Definition of done · cases (${(r.cases || []).length})</summary><ul>${(r.dod || []).map((x) => `<li>${esc(x)}</li>`).join('')}</ul><ul>${(r.cases || []).map((c) => `<li><b>Given</b> ${esc(c.given)} <b>When</b> ${esc(c.when)} <b>Then</b> ${esc(c.then)}</li>`).join('')}</ul></details>
+  </div>`;
+}
+function render() {
+  $('title').textContent = DATA.title;
+  $('meta').innerHTML = `<span>${esc(DATA.repo)}</span><span>designs ${DATA.designs.length}</span><span>planned tasks ${DATA.tasks.length}</span><span>version <code>${esc(DATA.version)}</code></span>`;
+  $('lede').textContent = DATA.summary || 'Mark each design: take it, rework it or skip it. A rework can be sent right from its card. Pick for each task whether it goes to a Linear task that already exists or to a new one. Create Linear tasks only files the tasks; Push to design also builds each taken design in the design repo and opens a PR, so a developer can pick it up.';
+  const open = DATA.tasks.reduce((n, t) => n + (t.gaps || []).length, 0);
+  $('tasks').innerHTML = `<h2>How this splits into tasks</h2>${open ? `<p class="note">Business review: ${open} open question(s) — they go into the tasks under Open questions. Answer them in a rework or in the task.</p>` : ''}` + DATA.tasks.map((t) => {
+    const sent = t.sent ? `<a class="chip on" href="${esc(t.sent.url)}" target="_blank" rel="noopener">in Linear · ${esc(t.sent.identifier)}</a>` : due().includes(t) ? '<span class="chip on">will be created</span>' : t.designs.some((d) => state[d].choice === 'rework') ? '<span class="chip wait">waits for a rework</span>' : '<span class="chip">will not be created</span>';
+    const pr = t.pushed ? `<a class="chip on" href="${esc(t.pushed.pr)}" target="_blank" rel="noopener">in design · PR</a>` : '';
+    return `<div class="task"><div class="head"><b>${esc(t.id)}</b><span>${esc(t.title)}</span><span class="chip">${t.side === 'backend' ? 'backend' : 'app'}</span><span class="chip">${t.designs.map(esc).join(', ')}</span>${sent}${pr}</div>
+      ${t.why ? `<p class="note">${esc(t.why)}</p>` : ''}${reviewBlock(t)}${linkPicker(t)}<details><summary>Task text from the team template</summary><pre>${esc(t.body)}</pre></details></div>`;
+  }).join('');
+  $('designs').innerHTML = DATA.designs.map((d) => {
+    const s = state[d.id];
+    const t = taskOf(d.id);
+    const sent = sentDesigns.get(d.id);
+    const c = DATA.checks[d.id] || {};
+    return `<article class="design ${s.choice === 'skip' ? 'off' : ''}" id="card-${esc(d.id)}">
+      <div class="top"><h2>${esc(d.id)} · ${esc(d.title)}</h2>${d.route ? `<code>${esc(d.route)}</code>` : ''}<span class="chip">${d.isNew ? 'new screen' : d.route ? 'in the app' : 'screen not known'}</span>${d.condition ? `<span class="chip">${esc(d.condition)}</span>` : '<span class="chip wait">condition?</span>'}${d.changed != null ? `<span class="chip">changed ${esc(d.changed)}%</span>` : ''}${t ? `<span class="chip">${esc(t.id)}</span>` : ''}${sent ? `<a class="chip on" href="${esc(sent.sent.url)}" target="_blank" rel="noopener">in Linear · ${esc(sent.sent.identifier)}</a>` : ''}</div>
+      ${compareBlock(d)}
+      <div class="side">
+        ${check(c.ds)}${check(c.backend)}${check(c.mobile)}
+        <div class="choice" role="group" aria-label="What to do with ${esc(d.id)}">
+          ${[['take', sent ? 'Already in a task' : 'Take'], ['rework', 'Rework'], ['skip', 'Skip']].map(([k, label]) => `<button type="button" data-id="${esc(d.id)}" data-choice="${k}" aria-pressed="${s.choice === k}" ${sent && k === 'skip' ? 'disabled' : ''}>${label}</button>`).join('')}
+        </div>
+        ${s.choice === 'rework' ? `<div class="rework"><textarea id="note-${esc(d.id)}" placeholder="What to rework in ${esc(d.id)}" aria-label="What to rework in ${esc(d.id)}">${esc(s.note)}</textarea><button class="plain" type="button" data-send="${esc(d.id)}">Send for rework</button>${sent ? `<p class="note">The task is already in Linear — the rework goes there as a comment.</p>` : ''}</div>` : ''}
+      </div></article>`;
+  }).join('');
+  const n = due().length;
+  const by = (k) => DATA.designs.filter((d) => state[d.id].choice === k).map((d) => d.id);
+  $('sum').textContent = `Take: ${by('take').join(', ') || '—'} · rework: ${by('rework').join(', ') || '—'} · skip: ${by('skip').join(', ') || '—'}`;
+  $('create').textContent = n ? `Create Linear tasks (${n})` : 'Create Linear tasks';
+  $('create').disabled = !n;
+  const pu = pushable();
+  $('push').textContent = pu.ok.length ? `Push to design (${pu.ok.length})` : 'Push to design';
+  $('push').disabled = DATA.light || !pu.ok.length;
+  const why = DATA.light ? 'Push to design needs the full setup of the design repo (light mode now). Create Linear tasks works.' : pu.no.join('; ');
+  $('push').title = why;
+  $('push-note').textContent = why;
+  $('push-note').hidden = !why;
+}
+render();
+
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-choice]');
+  if (b) {
+    const id = b.dataset.id;
+    const note = $(`note-${id}`);
+    if (note) state[id].note = note.value;
+    state[id].choice = b.dataset.choice;
+    save();
+    render();
+    return;
+  }
+  const r = e.target.closest('button[data-reset]');
+  if (r) { Object.assign(state[r.dataset.reset], { dx: 0, dy: 0 }); save(); render(); return; }
+  const v = e.target.closest('button[data-view]');
+  if (v) { state[v.dataset.id].view = v.dataset.view; save(); render(); return; }
+  const s = e.target.closest('button[data-send]');
+  if (s) void sendRework(s.dataset.send);
+});
+// moving the design over "now": pointer drag (the shown phone is smaller than the shot — scale back to shot pixels)
+let drag = null;
+const moveTo = (id, dx, dy) => {
+  const s = state[id];
+  s.dx = Math.round(Math.max(-SHOT.w, Math.min(SHOT.w, dx)));
+  s.dy = Math.round(Math.max(-SHOT.h, Math.min(SHOT.h, dy)));
+  const top = $(`top-${id}`);
+  if (top) top.style.transform = shift(s);
+  const label = $(`shift-${id}`);
+  if (label) label.textContent = `${s.dx}, ${s.dy} px`;
+};
+document.addEventListener('pointerdown', (e) => {
+  const id = e.target.dataset && e.target.dataset.drag;
+  if (!id) return;
+  e.preventDefault();
+  const box = e.target.parentElement.getBoundingClientRect();
+  drag = { id, x: e.clientX, y: e.clientY, dx: state[id].dx, dy: state[id].dy, k: SHOT.w / (box.width || SHOT.w) };
+  if (e.target.setPointerCapture) e.target.setPointerCapture(e.pointerId);
+});
+document.addEventListener('pointermove', (e) => {
+  if (drag) moveTo(drag.id, drag.dx + (e.clientX - drag.x) * drag.k, drag.dy + (e.clientY - drag.y) * drag.k);
+});
+document.addEventListener('pointerup', () => { if (drag) { drag = null; save(); } });
+document.addEventListener('keydown', (e) => {
+  const id = e.target.dataset && e.target.dataset.drag;
+  const step = e.shiftKey ? 10 : 1;
+  const by = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] }[e.key];
+  if (!id || !by) return;
+  e.preventDefault();
+  moveTo(id, state[id].dx + by[0], state[id].dy + by[1]);
+  save();
+});
+document.addEventListener('change', (e) => {
+  const id = e.target.dataset && e.target.dataset.link;
+  if (id) { state.links[id] = e.target.value; save(); render(); }
+});
+document.addEventListener('input', (e) => {
+  const o = e.target.dataset && e.target.dataset.opacity;
+  if (o) { state[o].opacity = Number(e.target.value); const top = $(`top-${o}`); if (top) top.style.opacity = state[o].opacity / 100; save(); return; }
+  const m = /^note-(D\d+)$/.exec(e.target.id || '');
+  if (m) { state[m[1]].note = e.target.value; save(); }
+});
+
+// ── where decisions go: the local server (this page opened from `designs.mjs serve`), else a Claude artifact's
+//    comments, else a line to paste into the chat ──
+const IN_CLAUDE = Boolean(window.claude && window.claude.use);
+if (DATA.artifact) { $('artifact-link').href = DATA.artifact; $('artifact-link').hidden = false; }
+$('make-artifact').hidden = IN_CLAUDE || Boolean(DATA.artifact);
+if (LOCAL) {
+  // the page was rebuilt (a rework, created tasks, the artifact link): show the new one
+  setInterval(async () => {
+    try {
+      const s = await (await fetch(`/state?t=${encodeURIComponent(TOKEN)}`)).json();
+      if (s.revision !== DATA.revision || s.version !== DATA.version || (s.artifact || null) !== (DATA.artifact || null)) location.reload();
+    } catch (e) { /* server stopped */ }
+  }, 4000);
+}
+async function postLocal(text) {
+  const r = await fetch(`/decision?t=${encodeURIComponent(TOKEN)}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text }) });
+  return r.ok;
+}
+
+// ── capabilities: comments carry decisions to the Claude session that published the page; db keeps a record ──
+let comments = null;
+let db = null;
+let user = null;
+const use = (name) => (window.claude && window.claude.use ? window.claude.use(name).catch(() => null) : Promise.resolve(null));
+use('comments').then((c) => (comments = c));
+Promise.all([use('db'), use('user')]).then(([d, u]) => { db = d; user = u; });
+const head = () => `[handoff-designs ${DATA.batch} ${DATA.version}]`;
+
+async function send(text, anchorEl, done) {
+  if (LOCAL) {
+    let ok = false;
+    try { ok = await postLocal(text); } catch (e) { ok = false; }
+    if (ok) { $('status').textContent = done; return; }
+    $('status').textContent = 'The page server has stopped.';
+  }
+  // first, while the click is fresh: Claude accepts it only from the viewer's own gesture
+  let sent = false;
+  try {
+    if (comments && comments.sendToClaude) {
+      const can = await comments.canSendToClaude();
+      if (can === 'available') { await comments.sendToClaude({ anchor: await comments.anchorFor(anchorEl), text }); sent = true; }
+      else if (can === 'no_session') { $('status').textContent = 'The Claude session that published this page is closed. Open it and paste the line below.'; }
+    }
+  } catch (e) { /* fallback below */ }
+  try {
+    if (db) await db.doc('decisions/latest').set({ text, version: DATA.version, at: new Date().toISOString(), by: user && user.id ? await user.id() : null });
+  } catch (e) { /* the comment starts the work; the record is a backup */ }
+  if (sent) $('status').textContent = done;
+  else $('status').innerHTML = `${esc($('status').textContent)} Send Claude this line in the chat: <span class="copy">${esc(text)}</span>`;
+}
+async function sendRework(id) {
+  const note = ($(`note-${id}`) || {}).value || '';
+  if (!note.trim()) { $('status').textContent = `Write what to rework in ${id}.`; $(`note-${id}`).focus(); return; }
+  state[id].note = note;
+  save();
+  await send(`${head()} Rework ${id}: ${note.trim()}`, $(`card-${id}`), `${id} sent for rework — the page updates when Claude is done.`);
+}
+$('make-artifact').addEventListener('click', async () => {
+  $('make-artifact').disabled = true;
+  await send(`${head()} Create artifact`, $('decide'), 'Sent: Claude publishes this page as a Claude artifact — the link appears here.');
+  $('make-artifact').disabled = false;
+});
+$('create').addEventListener('click', async () => {
+  const by = (k) => DATA.designs.filter((d) => state[d.id].choice === k).map((d) => d.id).join(',') || '—';
+  $('create').disabled = true;
+  await send(`${head()} Create tasks: take ${by('take')}; rework ${by('rework')}; skip ${by('skip')}${linkLine(due())}`, $('decide'), 'Sent: Claude creates the Linear tasks with screenshots (or adds them to the chosen ones). The links come back as a reply and the page updates.');
+  $('create').disabled = !due().length;
+});
+$('push').addEventListener('click', async () => {
+  const by = (k) => DATA.designs.filter((d) => state[d.id].choice === k).map((d) => d.id).join(',') || '—';
+  const pu = pushable();
+  if (DATA.light || !pu.ok.length) return;
+  $('push').disabled = true;
+  // the Linear tasks go first (found or new), then each design goes to the design repo on its own branch with a PR
+  const linked = [...new Set([...due(), ...pu.ok])];
+  await send(`${head()} Push to design: take ${by('take')}; rework ${by('rework')}; skip ${by('skip')}${linkLine(linked)}`, $('decide'), 'Sent: Claude puts the tasks in Linear, builds each design in the design repo and opens a PR for it. The links come back and the page updates.');
+  $('push').disabled = !pushable().ok.length;
+});
+</script>

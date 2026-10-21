@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="Dev Loop">
+  <rect width="128" height="128" rx="28" fill="#111B32"/>
+  <path d="M88 36A37 37 0 0 0 29 73M40 92A37 37 0 0 0 99 55" fill="none" stroke="#8CB4FF" stroke-width="10" stroke-linecap="round"/>
+  <path d="m72 35 18 3-2-18M56 93l-18-3 2 18" fill="none" stroke="#8CB4FF" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="m49 63 11 11 22-23" fill="none" stroke="#7DE2B0" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

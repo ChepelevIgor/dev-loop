@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["completed", "findings"],
+  "properties": {
+    "completed": {"type": "boolean"},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["file", "line", "severity", "category", "body"],
+        "properties": {
+          "file": {"type": ["string", "null"]},
+          "line": {"type": ["integer", "null"]},
+          "severity": {"type": "string", "enum": ["blocker", "major", "minor", "nit"]},
+          "category": {"type": "string", "enum": ["correctness", "design", "perf", "security", "ux", "test"]},
+          "body": {"type": "string"}
+        }
+      }
+    }
+  }
+}
